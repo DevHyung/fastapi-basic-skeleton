@@ -1,0 +1,15 @@
+# Backend
+python-dotenv
+fastapi
+uvicorn
+pyjwt
+passlib[bcrypt]
+bcrypt==4.0.1
+# Data
+openpyxl
+pandas
+matplotlib
+# Util
+jupyter
+tqdm
+requests
