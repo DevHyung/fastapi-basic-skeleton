@@ -53,3 +53,13 @@ $ ngrok http {PORT_HERE} --authtoken {TOKEN_HERE}
 ```shell
 $ nohup python main.py > ../logs/nohup.log 2>&1 &
 ```
+
+# `.streamlit/config.toml` example
+```shell
+[theme]
+base = "dark"  # 다크 모드 설정
+
+[server]
+port = 40203  # 기본 포트 설정
+address = "0.0.0.0"
+```
