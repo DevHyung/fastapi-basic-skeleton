@@ -19,12 +19,12 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 
 
 """ app 오브젝트 + Config """
-app = FastAPI(title="TITLE",
-              version="v0.1.0",
+app = FastAPI(title="TITLE_EXAMPLE",
+              version="v0.0.1",
               docs_url="/api/docs",
               redoc_url="/api/redocs",
               openapi_url="/api/openapi.json",
-              description="DESCRIPTION",
+              description="DESCRIPTION_EXAMPLE",
               lifespan=lifespan,
               generate_unique_id_function=custom_generate_unique_id)
 
@@ -37,7 +37,6 @@ app.add_middleware(
     allow_methods=["*"],  # 허용할 HTTP 메서드
     allow_headers=["*"],  # 허용할 HTTP 헤더
 )
-
 #app.add_middleware(security.IPWhitelistMiddleware, allowed_ips=GLOBALS.ALLOWED_IPS)
 
 if __name__ == '__main__':
@@ -45,12 +44,12 @@ if __name__ == '__main__':
     MODE = CONFIG.TYPE
     # FOR DEBUG
     if MODE == "DEV":
-        uvicorn.run(app="main:app", # YOUR_FILE:YOUR_APP_OBJECT
-                    host="0.0.0.0", # INPUT_YOUR_HOST
-                    port=50202, # INPUT_YOUR_PORT
-                    reload=True)
-    elif MODE == "PROD":
         uvicorn.run(app="main:app",  # YOUR_FILE:YOUR_APP_OBJECT
                     host="0.0.0.0",  # INPUT_YOUR_HOST
-                    port=10203,  # INPUT_YOUR_PORT
-                    reload=False)  # IF_DEV_True
+                    port=50202,  # INPUT_YOUR_PORT
+                    reload=True)  # IF_DEV_True
+    elif MODE == "PROD":
+        uvicorn.run(app="main:app",
+                    host="0.0.0.0",
+                    port=10203,
+                    reload=False)
