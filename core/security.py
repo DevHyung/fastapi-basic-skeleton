@@ -59,11 +59,15 @@ def get_password_hash(password: str) -> str:
 def verify_token(token: HTTPBearer) -> str | None:
     try:
         bearer = token.credentials
-        payload = jwt.decode(bearer, CONFIG.SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        payload = jwt.decode(bearer,
+                             CONFIG.SECRET_KEY,
+                             algorithms=[ALGORITHM])
+        user_name: str = payload.get("sub", None)
+        if user_name is None:
             return None
-        return username
+        return user_name
     except InvalidTokenError:
         return None
 
+if __name__ == "__main__":
+    print(pwd_context.hash('test'))
