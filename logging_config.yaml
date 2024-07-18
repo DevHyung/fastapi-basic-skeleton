@@ -7,9 +7,11 @@ formatters:
   detailed:
     format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     datefmt: '%Y-%m-%d %H:%M:%S'
-  custom:
-    # '%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s'
+  custom: #'%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s'
     format: '[%(levelname)s | %(asctime)s | %(module)s(L%(lineno)d)] - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  formatter_access:
+    format: '[%(asctime)s] %(message)s'
     datefmt: '%Y-%m-%d %H:%M:%S'
 handlers:
   console:
@@ -35,10 +37,22 @@ handlers:
     backupCount: 7
     encoding: 'utf-8'
     filename: '/Users/hjpark/Dropbox/fastapi-basic-skeleton/logs/error/logfile.log' #maxBytes: 10485760 # 10MB,
+  access_file_handler:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: formatter_access
+    when: 'midnight'
+    interval: 1
+    backupCount: 7
+    encoding: 'utf-8'
+    filename: '/Users/hjpark/Dropbox/fastapi-basic-skeleton/logs/access/logfile.log' #maxBytes: 10485760 # 10MB,
 loggers:
   app:
     handlers: [console, info_file_handler, error_file_handler]
     propagate: no
-root:
-  level: DEBUG # ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
-  handlers: [console, info_file_handler, error_file_handler]
+  app_access:
+    handlers: [access_file_handler]
+    propagate: no
+  root:
+    level: DEBUG # ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+    handlers: [console, info_file_handler, error_file_handler]
