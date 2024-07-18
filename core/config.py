@@ -7,7 +7,9 @@ from typing import Literal
 """ CONFIG AREA ===== START """
 parent_path = path.abspath(path.join(path.abspath(__file__), "../../")) # 1-depth above == ../../
 MODE: Literal["DEV", "PROD"] = "DEV"
+
 """ CONFIG AREA ===== END """
+load_dotenv(dotenv_path=path.join(parent_path, ".env"))
 
 
 @dataclass
@@ -19,7 +21,8 @@ class Config:
     NAVER_CLIENT_ID: str = getenv('NAVER_CLIENT_ID')
     NAVER_CLIENT_SECRET: str = getenv('NAVER_CLIENT_SECRET')
     SECRET_KEY: str = getenv('SECRET_KEY')
-    DATABASE_URL = getenv('DATABASE_URL')
+    DATABASE_URL: str = getenv('DATABASE_URL')
+    LOG_CONFIG_PATH: str = getenv('LOG_CONFIG_PATH')
 
 
 @dataclass
@@ -38,10 +41,6 @@ class ProdConfig(Config):
 
 
 def conf(mode: Literal["DEV", "PROD"] = "DEV") -> LocalConfig | ProdConfig:
-    global  parent_path
-
-    load_dotenv(dotenv_path=path.join(parent_path, ".env"))
-
     config = dict(
         PROD=ProdConfig(),
         DEV=LocalConfig()
@@ -52,6 +51,7 @@ def conf(mode: Literal["DEV", "PROD"] = "DEV") -> LocalConfig | ProdConfig:
 
 if __name__ == "__main__":
     print(asdict(LocalConfig()))
-    print(conf().BASE_DIR)
+    CONFIG = conf(mode=MODE)
+    print(CONFIG)
 else:
     CONFIG = conf(mode=MODE)
