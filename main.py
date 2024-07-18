@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from time import perf_counter
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 from contextlib import asynccontextmanager
@@ -8,14 +10,16 @@ from api.v1 import api_router
 
 from core.config import CONFIG
 
+from core.log import logger, access_logger
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    pass
     yield
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    return f"{route.name}"
+    #return f"{route.tags[0]}-{route.name}"
 
 
 """ app 오브젝트 + Config """
@@ -37,7 +41,20 @@ app.add_middleware(
     allow_methods=["*"],  # 허용할 HTTP 메서드
     allow_headers=["*"],  # 허용할 HTTP 헤더
 )
-#app.add_middleware(security.IPWhitelistMiddleware, allowed_ips=GLOBALS.ALLOWED_IPS)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = perf_counter()
+    client_ip = request.client.host
+    client_port = request.client.port
+    method = request.method
+    url = request.url.path
+    response = await call_next(request)
+    elapsed = round(perf_counter() - start_time, 4)
+    status_code = response.status_code
+    access_logger.info(f'status {status_code} | {elapsed}s | {client_ip}:{client_port} - "{method} {url}"')
+    return response
+
 
 if __name__ == '__main__':
     """ 참조 https://github.com/tiangolo/full-stack-fastapi-template/tree/master/backend """
