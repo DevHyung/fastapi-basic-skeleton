@@ -49,10 +49,19 @@ async def log_requests(request: Request, call_next):
     client_port = request.client.port
     method = request.method
     url = request.url.path
+    query_params = dict(request.query_params)
+    path_params = request.path_params
+    body = await request.body()
+
     response = await call_next(request)
     elapsed = round(perf_counter() - start_time, 4)
     status_code = response.status_code
-    access_logger.info(f'status {status_code} | {elapsed}s | {client_ip}:{client_port} - "{method} {url}"')
+    access_logger.info(
+        f'status {status_code} | {elapsed}s | {client_ip}:{client_port} - "{method} {url}"\n'
+        f'Query Params: {query_params}\n'
+        f'Path Params: {path_params}\n'
+        f'Body: {body.decode("utf-8") if body else None}'
+    )
     return response
 
 
